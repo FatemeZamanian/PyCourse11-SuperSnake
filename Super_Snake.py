@@ -1,34 +1,40 @@
 
 import pygame
 import random
-import time
 class Apple:
     def __init__(self):
         self.r=8
-        self.x=random.randint(5,width)
-        self.y=random.randint(5,height)
+        self.x=random.randint(40,width-40)
+        self.y=random.randint(40,height-40)
         self.color=(255,0,0)
     def show(self):
-        pygame.draw.circle(disp,self.color,[self.x,self.y],self.r)
+        # pygame.draw.circle(disp,self.color,[self.x,self.y],self.r)
+        apl=pygame.image.load('apple.png')
+        disp.blit(apl,(self.x,self.y))
 
 class Bomb:
     def __init__(self):
         self.r=9
-        self.x=random.randint(5,width)
-        self.y=random.randint(5,height)
+        self.x=random.randint(40,width-40)
+        self.y=random.randint(40,height-40)
         self.color=(0,0,0)
     def show(self):
-        pygame.draw.circle(disp,self.color,[self.x,self.y],self.r)
+        #pygame.draw.circle(disp,self.color,[self.x,self.y],self.r)
+        bmb=pygame.image.load('bomb.png')
+        disp.blit(bmb,(self.x,self.y))
 
 
 class Pear:
     def __init__(self):
         self.r=10
-        self.x=random.randint(5,width)
-        self.y=random.randint(5,height)
+        self.x=random.randint(20,width-20)
+        self.y=random.randint(20,height-20)
         self.color=(255,255,153)
     def show(self):
-        pygame.draw.circle(disp,self.color,[self.x,self.y],self.r)
+        #pygame.draw.circle(disp,self.color,[self.x,self.y],self.r)
+        pr=pygame.image.load('pear.png')
+        disp.blit(pr,(self.x,self.y))
+        
 
 class Snake:
     def __init__(self):
@@ -36,38 +42,30 @@ class Snake:
         self.h=16
         self.x=width/2
         self.y=height/2
-        self.name='snake'
-        self.color=(255,204,0)
+        self.color=(255,0,0)
+        self.color3=(255,204,0)
         self.color2=(255,102,0)
         self.score=0
         self.x_change=0
         self.y_change=0
         self.speed=16
         self.body=[]
-        global s
-        s=0
+
     def show(self):
         pygame.draw.rect(disp,self.color,[self.x,self.y,self.w,self.h])
-        self.move()
-        global su,sl
-        sl=16
-        su=16
+        i=0
         for x in self.body:
-            if self.y_change==1 and self.x_change==0:
-                su-=self.h
-                pygame.draw.rect(disp,self.color2,[x[0],x[1]+su,self.w,self.h])
-            elif self.y_change==-1 and self.x_change==0:
-                su+=self.h
-                pygame.draw.rect(disp,self.color2,[x[0],x[1]+su,self.w,self.h])
-            elif self.y_change==0 and self.x_change==1:
-                sl-=self.w
-                pygame.draw.rect(disp,self.color2,[x[0]+sl,x[1],self.w,self.h])
-            elif self.y_change==0 and self.x_change==-1:
-                sl+=self.w
-                pygame.draw.rect(disp,self.color2,[x[0]+sl,x[1],self.w,self.h])
+            i+=1
+            if i%2==0:
+                pygame.draw.rect(disp,self.color3,[x['x'],x['y'],self.w,self.h])
+            else:
+                pygame.draw.rect(disp,self.color2,[x['x'],x['y'],self.w,self.h])
                 
 
     def move(self):
+        self.body.append({'x':self.x,'y':self.y})
+        if len(self.body)>self.score:
+            self.body.remove(self.body[0])
         if self.x_change==-1:
             self.x-=self.speed
         elif self.x_change==1:
@@ -76,76 +74,51 @@ class Snake:
             self.y-=self.speed
         elif self.y_change==1:
             self.y+=self.speed
-        for xx in self.body:
-            if self.x_change==-1:
-                xx[0]-=self.speed
-            elif self.x_change==1:
-                xx[0]+=self.speed
-            elif self.y_change==-1:
-                xx[1]-=self.speed
-            elif self.y_change==1:
-                xx[1]+=self.speed
+        
 
 
     def eat_apple(self):
         if apple.x-apple.r <= self.x <= apple.x+apple.r and apple.y-apple.r <= self.y <= apple.y+apple.r:
-            self.score+=1
             return True
         else:
             return False
 
     def eat_pear(self):
         if pear.x-pear.r <= self.x <= pear.x+pear.r and pear.y-pear.r <= self.y <= pear.y+pear.r:
-            self.score+=2
             return True
         else:
             return False
 
     def eat_bomb(self):
         if bomb.x-bomb.r <= self.x <= bomb.x+bomb.r and bomb.y-bomb.r <= self.y <= bomb.y+bomb.r:
-            self.score-=1
             return True
         else:
             return False
 
     def lose(self):
-        
-        # font=pygame.font.Font('freesansbold',35)
-        if self.x+5>=width or self.x-5<=0 or self.y+5>=height or self.y-5<=0 or self.score<0:
+        if self.x>=width or self.x<=0 or self.y>=height or self.y<=0 or self.score<0:
             return True
         else:
             return False
-            # disp.blit(img_lose,(0,0))
-            # pygame.font.init()
-            # font=pygame.font.SysFont('Comic Sans MS',35)
-            # txt_lose=font.render('Game Over...!',True,(255,0,0))
-            # disp.blit(txt_lose,(0,0))
-        # if self.score<0:
-        #     disp=pygame.display.set_mode((300,200))
-        #     disp.blit(img_lose,(0,0))
-        #     pygame.font.init()
-        #     font=pygame.font.SysFont('Comic Sans MS',35)
-        #     txt_lose=font.render('Game Over...!',True,(255,0,0))
-        #     disp.blit(txt_lose,(0,0))
-
+            
 
 
 
 if __name__=='__main__':
-    width=500
-    height=500
+    bg=pygame.image.load('green_background.jpg')
+    pygame.font.init()
+    font=pygame.font.SysFont('comicsansms',35)
+    width=400
+    height=400
     disp=pygame.display.set_mode((width,height))
     clock=pygame.time.Clock()
     apple=Apple()
     snake=Snake()
     pear=Pear()
     bomb=Bomb()
-    pygame.font.init()
-    font=pygame.font.SysFont('Comic Sans MS',35)
     
     while True:
-        txt_score=font.render('Score : '+str(snake.score),True,(255,0,0),(0,0,0))
-        disp.blit(txt_score,(100,0))
+        
         for event in pygame.event.get():
             if event.type==pygame.KEYDOWN:
                 if event.key==pygame.K_UP or event.key==pygame.K_w:
@@ -160,40 +133,33 @@ if __name__=='__main__':
                 if event.key==pygame.K_RIGHT or event.key==pygame.K_d:
                     snake.y_change=0
                     snake.x_change=1
-        disp.fill((0,0,128))
-        snake_item=[]
+        disp.blit(bg,(0,0))
+        txt_score=font.render('Score: '+str(snake.score),True,(255,215,0))
+        disp.blit(txt_score,(150,0))
         snake.show()
         apple.show()
         pear.show()
         bomb.show()
+        snake.move()
         res_apple=snake.eat_apple()
         if res_apple==True:
             apple=Apple()
-            snake_item.append(snake.x)
-            snake_item.append(snake.y)
-            snake.body.append(snake_item)
+            snake.score+=1
 
         res_pear=snake.eat_pear()
         if res_pear==True:
             pear=Pear()
-            snake_item.append(snake.x)
-            snake_item.append(snake.y)
-            snake.body.append(snake_item)
-            snake_item=[]
-            snake_item.append(snake.x)
-            snake_item.append(snake.y)
-            snake.body.append(snake_item)
+            snake.score+=2
 
         res_bomb=snake.eat_bomb()
         if res_bomb==True:
             bomb=Bomb()
-            if snake.score>0:
-                snake.body.remove(snake.body[len(snake.body)-1])
-            else:
-                snake.score -=1
+            snake.score -=1
             
         if snake.lose()==True:
             disp=pygame.display.set_mode((300,200))
-        print(snake.body)
-        clock.tick(5)
+            img_lose=pygame.image.load('gameover.jpg')
+            disp.blit(img_lose,(0,0))
+
+        clock.tick((snake.score/3)+1)
         pygame.display.update()
